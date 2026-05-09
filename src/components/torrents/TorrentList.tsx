@@ -1,61 +1,63 @@
+import { useState } from "react";
 import { Inbox } from "lucide-react";
 
 import type { Torrent } from "@/lib/api";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TorrentCard } from "./TorrentCard";
 import { TorrentRow } from "./TorrentRow";
+import { TorrentDetailPanel } from "./TorrentDetailPanel";
 
 export function TorrentList({ torrents }: { torrents: Torrent[] }) {
+  const [selectedHash, setSelectedHash] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
   if (torrents.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border py-16 text-center">
-        <Inbox className="size-8 text-muted-foreground/60" />
-        <div>
-          <p className="text-sm font-medium">No torrents yet</p>
-          <p className="text-xs text-muted-foreground">
-            Add a torrent in qBittorrent and it will appear here.
+      <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+        <span
+          aria-hidden
+          className="grid size-12 place-items-center rounded-full bg-tidepool-row text-tidepool-text-subtle"
+        >
+          <Inbox className="size-5" strokeWidth={1.75} />
+        </span>
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-tidepool-text">No torrents yet</p>
+          <p className="text-xs text-tidepool-text-muted">
+            Add a torrent in qBittorrent and it'll appear here.
           </p>
         </div>
       </div>
     );
   }
 
+  const selected =
+    (selectedHash && torrents.find((t) => t.hash === selectedHash)) || null;
+
+  const handleSelect = (hash: string) => {
+    setSelectedHash(hash);
+    setOpen(true);
+  };
+
   return (
     <>
-      {/* Mobile: card list */}
-      <div className="flex flex-col gap-2 md:hidden">
+      <ul className="overflow-hidden rounded-xl border border-tidepool-divider bg-tidepool-row">
         {torrents.map((t) => (
-          <TorrentCard key={t.hash} torrent={t} />
+          <TorrentRow
+            key={t.hash}
+            torrent={t}
+            selected={selectedHash === t.hash && open}
+            onSelect={() => handleSelect(t.hash)}
+          />
         ))}
-      </div>
-
-      {/* Desktop: table */}
-      <div className="hidden overflow-hidden rounded-xl border border-border md:block">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead className="w-[44%]">Name</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Size</TableHead>
-              <TableHead className="text-right">↓</TableHead>
-              <TableHead className="text-right">↑</TableHead>
-              <TableHead className="text-right">ETA</TableHead>
-              <TableHead className="text-right">Ratio</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {torrents.map((t) => (
-              <TorrentRow key={t.hash} torrent={t} />
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      </ul>
+      <TorrentDetailPanel
+        torrent={selected}
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v);
+          if (!v) {
+            setTimeout(() => setSelectedHash(null), 250);
+          }
+        }}
+      />
     </>
   );
 }

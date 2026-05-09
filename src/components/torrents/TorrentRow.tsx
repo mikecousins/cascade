@@ -1,70 +1,130 @@
-import { ArrowDown, ArrowUp } from "lucide-react";
+import {
+  Archive,
+  BookOpen,
+  File,
+  Film,
+  Music,
+  Package,
+  Tv,
+} from "lucide-react";
 
 import type { Torrent } from "@/lib/api";
-import { TableCell, TableRow } from "@/components/ui/table";
 import {
   formatBytes,
   formatEta,
   formatPercent,
   formatRatio,
-  formatSpeed,
 } from "@/lib/format";
-import { StatusBadge } from "./StatusBadge";
-import { ProgressBar } from "./ProgressBar";
+import { cn } from "@/lib/utils";
+import { detectFileKind, type FileKind } from "./fileType";
+import {
+  proseStatus,
+  stateToTone,
+  toneCopy,
+  type StatusTone,
+} from "./statusCopy";
 
-export function TorrentRow({ torrent }: { torrent: Torrent }) {
-  const isComplete = torrent.progress >= 1;
+const KIND_ICON: Record<FileKind, typeof Film> = {
+  movie: Film,
+  show: Tv,
+  music: Music,
+  book: BookOpen,
+  archive: Archive,
+  software: Package,
+  other: File,
+};
+
+const RAIL_TONE: Record<StatusTone, string> = {
+  active: "bg-teal",
+  complete: "bg-teal/40",
+  paused: "bg-tidepool-text-muted/30",
+  stalled: "bg-warning",
+  error: "bg-error",
+};
+
+const TONE_TEXT: Record<StatusTone, string> = {
+  active: "text-teal-strong dark:text-teal",
+  complete: "text-tidepool-text-muted",
+  paused: "text-tidepool-text-muted",
+  stalled: "text-warning",
+  error: "text-error",
+};
+
+export function TorrentRow({
+  torrent,
+  selected,
+  onSelect,
+}: {
+  torrent: Torrent;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const tone = stateToTone(torrent.state);
+  const Icon = KIND_ICON[detectFileKind(torrent)];
+  const pct = Math.max(0, Math.min(1, torrent.progress)) * 100;
+
+  const verb = toneCopy(torrent.state);
+  const full = proseStatus(torrent);
+  const tail = full.startsWith(verb) ? full.slice(verb.length) : ` ${full}`;
+
   return (
-    <TableRow>
-      <TableCell className="max-w-0 py-3">
-        <div className="flex flex-col gap-1.5">
-          <span className="truncate text-sm font-medium" title={torrent.name}>
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-pressed={selected}
+        className={cn(
+          "group relative flex w-full items-start gap-4 px-4 pt-4 pb-5 text-left transition-colors duration-150 sm:px-6 sm:pt-5",
+          "hover:bg-tidepool-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/70 focus-visible:ring-inset",
+          selected && "bg-tidepool-row-selected"
+        )}
+      >
+        <span
+          aria-hidden
+          className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg bg-tidepool-row-hover text-tidepool-text-muted group-hover:text-tidepool-text"
+        >
+          <Icon className="size-4" strokeWidth={1.75} />
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <p
+            className="line-clamp-2 text-[15px] font-medium leading-snug text-tidepool-text"
+            title={torrent.name}
+          >
             {torrent.name}
-          </span>
-          <div className="flex items-center gap-2">
-            <ProgressBar
-              value={torrent.progress}
-              tone={isComplete ? "success" : "primary"}
-              className="max-w-xs"
-            />
-            <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
-              {formatPercent(torrent.progress)}
-            </span>
+          </p>
+          <p className="mt-1.5 line-clamp-1 text-xs text-tidepool-text-muted">
+            <span className={cn("font-medium", TONE_TEXT[tone])}>{verb}</span>
+            <span>{tail}</span>
+          </p>
+        </div>
+
+        <div className="shrink-0 text-right tabular-nums">
+          <div className="text-lg font-semibold leading-none text-tidepool-text">
+            {formatPercent(torrent.progress)}
+          </div>
+          <div className="mt-1.5 text-xs text-tidepool-text-muted">
+            {torrent.dlspeed > 0
+              ? formatEta(torrent.eta)
+              : tone === "complete"
+                ? `${formatRatio(torrent.ratio)} ratio`
+                : formatBytes(torrent.size)}
           </div>
         </div>
-      </TableCell>
-      <TableCell className="py-3">
-        <StatusBadge state={torrent.state} />
-      </TableCell>
-      <TableCell className="py-3 text-right text-sm tabular-nums text-muted-foreground">
-        {formatBytes(torrent.size)}
-      </TableCell>
-      <TableCell className="py-3 text-right text-sm tabular-nums">
-        {torrent.dlspeed > 0 ? (
-          <span className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400">
-            <ArrowDown className="size-3" />
-            {formatSpeed(torrent.dlspeed)}
-          </span>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-      </TableCell>
-      <TableCell className="py-3 text-right text-sm tabular-nums">
-        {torrent.upspeed > 0 ? (
-          <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-            <ArrowUp className="size-3" />
-            {formatSpeed(torrent.upspeed)}
-          </span>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-      </TableCell>
-      <TableCell className="py-3 text-right text-sm tabular-nums text-muted-foreground">
-        {formatEta(torrent.eta)}
-      </TableCell>
-      <TableCell className="py-3 text-right text-sm tabular-nums text-muted-foreground">
-        {formatRatio(torrent.ratio)}
-      </TableCell>
-    </TableRow>
+
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-tidepool-divider"
+        >
+          <div
+            className={cn(
+              "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none",
+              RAIL_TONE[tone]
+            )}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </button>
+    </li>
   );
 }
