@@ -1,0 +1,20 @@
+node_modules
+dist
+cascade/public
+.env
+.env.local
+.env.*.local
+.DS_Store
+*.log
+.vite
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+
+# generated
+src/routeTree.gen.ts
+*.tsbuildinfo
