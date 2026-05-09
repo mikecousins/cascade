@@ -11,18 +11,43 @@
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
+  /* Primary rebound to Tidepool Teal (brand voice on light theme). */
+  --primary: oklch(0.50 0.13 200);
+  --primary-foreground: oklch(0.99 0.01 200);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: oklch(0.55 0.21 25);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
+  --ring: oklch(0.50 0.13 200 / 0.55);
+
+  /* Tidepool: brand accent + functional state. */
+  --teal: oklch(0.50 0.13 200);
+  --teal-strong: oklch(0.42 0.14 200);
+  --teal-soft: oklch(0.92 0.04 200);
+  --teal-fg: oklch(0.99 0.01 200);
+  --teal-glow: oklch(0.50 0.13 200 / 0.14);
+  --warning: oklch(0.60 0.15 65);
+  --warning-soft: oklch(0.95 0.05 75);
+  --warning-fg: oklch(0.30 0.10 65);
+  --error: oklch(0.55 0.21 25);
+  --error-soft: oklch(0.95 0.04 25);
+  --error-fg: oklch(0.35 0.15 25);
+
+  /* Tidepool: warm-tinted neutrals for the torrent surface. Hue 200 keeps
+     the canvas on the same temperature axis as the teal accent. */
+  --tidepool-canvas: oklch(0.985 0.004 200);
+  --tidepool-row: oklch(0.97 0.006 200);
+  --tidepool-row-hover: oklch(0.945 0.009 200);
+  --tidepool-row-selected: oklch(0.93 0.022 200);
+  --tidepool-divider: oklch(0.88 0.008 200);
+  --tidepool-text: oklch(0.20 0.012 200);
+  --tidepool-text-muted: oklch(0.46 0.014 200);
+  --tidepool-text-subtle: oklch(0.62 0.014 200);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -45,18 +70,42 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
+  /* Primary rebound to Tidepool Teal (brand voice on dark theme). */
+  --primary: oklch(0.72 0.13 200);
+  --primary-foreground: oklch(0.16 0.04 200);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
   --muted-foreground: oklch(0.705 0.015 286.067);
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(0.72 0.20 25);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
+  --ring: oklch(0.72 0.13 200 / 0.55);
+
+  /* Tidepool: brand accent + functional state. */
+  --teal: oklch(0.72 0.13 200);
+  --teal-strong: oklch(0.80 0.14 200);
+  --teal-soft: oklch(0.30 0.07 200);
+  --teal-fg: oklch(0.16 0.04 200);
+  --teal-glow: oklch(0.72 0.13 200 / 0.30);
+  --warning: oklch(0.78 0.15 75);
+  --warning-soft: oklch(0.30 0.07 75);
+  --warning-fg: oklch(0.95 0.04 75);
+  --error: oklch(0.72 0.20 25);
+  --error-soft: oklch(0.28 0.10 25);
+  --error-fg: oklch(0.96 0.04 25);
+
+  /* Tidepool: warm-tinted neutrals for the torrent surface. */
+  --tidepool-canvas: oklch(0.16 0.012 200);
+  --tidepool-row: oklch(0.215 0.014 200);
+  --tidepool-row-hover: oklch(0.265 0.015 200);
+  --tidepool-row-selected: oklch(0.30 0.025 200);
+  --tidepool-divider: oklch(0.30 0.012 200);
+  --tidepool-text: oklch(0.97 0.005 200);
+  --tidepool-text-muted: oklch(0.72 0.015 200);
+  --tidepool-text-subtle: oklch(0.55 0.015 200);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -108,6 +157,27 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Tidepool palette tokens, exposed as Tailwind color utilities. */
+  --color-teal: var(--teal);
+  --color-teal-strong: var(--teal-strong);
+  --color-teal-soft: var(--teal-soft);
+  --color-teal-fg: var(--teal-fg);
+  --color-teal-glow: var(--teal-glow);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-fg: var(--warning-fg);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-error-fg: var(--error-fg);
+  --color-tidepool-canvas: var(--tidepool-canvas);
+  --color-tidepool-row: var(--tidepool-row);
+  --color-tidepool-row-hover: var(--tidepool-row-hover);
+  --color-tidepool-row-selected: var(--tidepool-row-selected);
+  --color-tidepool-divider: var(--tidepool-divider);
+  --color-tidepool-text: var(--tidepool-text);
+  --color-tidepool-text-muted: var(--tidepool-text-muted);
+  --color-tidepool-text-subtle: var(--tidepool-text-subtle);
 }
 
 @layer base {
