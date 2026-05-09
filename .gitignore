@@ -18,3 +18,7 @@ cascade/public
 # generated
 src/routeTree.gen.ts
 *.tsbuildinfo
+
+# claude code
+.claude/settings.local.json
+.claude/worktrees/
