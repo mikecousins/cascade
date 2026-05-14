@@ -17,6 +17,7 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { detectFileKind, type FileKind } from "./fileType";
+import { ProgressBar } from "./ProgressBar";
 import {
   proseStatus,
   stateToTone,
@@ -32,14 +33,6 @@ const KIND_ICON: Record<FileKind, typeof Film> = {
   archive: Archive,
   software: Package,
   other: File,
-};
-
-const RAIL_TONE: Record<StatusTone, string> = {
-  active: "bg-teal",
-  complete: "bg-teal/40",
-  paused: "bg-tidepool-text-muted/30",
-  stalled: "bg-warning",
-  error: "bg-error",
 };
 
 const TONE_TEXT: Record<StatusTone, string> = {
@@ -61,7 +54,6 @@ export function TorrentRow({
 }) {
   const tone = stateToTone(torrent.state);
   const Icon = KIND_ICON[detectFileKind(torrent)];
-  const pct = Math.max(0, Math.min(1, torrent.progress)) * 100;
 
   const verb = toneCopy(torrent.state);
   const full = proseStatus(torrent);
@@ -114,14 +106,12 @@ export function TorrentRow({
 
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-tidepool-divider"
+          className="pointer-events-none absolute bottom-0 left-0 right-0"
         >
-          <div
-            className={cn(
-              "h-full transition-[width] duration-700 ease-out motion-reduce:transition-none",
-              RAIL_TONE[tone]
-            )}
-            style={{ width: `${pct}%` }}
+          <ProgressBar
+            value={torrent.progress}
+            tone={tone}
+            thickness="rail"
           />
         </div>
       </button>
